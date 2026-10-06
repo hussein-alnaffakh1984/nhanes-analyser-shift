@@ -1,0 +1,7 @@
+cycle,method,weighted_OE
+2017-2020,Unadjusted,0.649 (0.590–0.718)
+2017-2020,CDC chained,0.808 (0.731–0.888)
+2017-2020,Quantile mapping (weighted),0.881 (0.792–0.963)
+2021-2023,Unadjusted,0.735 (0.668–0.802)
+2021-2023,CDC chained,1.287 (1.179–1.407)
+2021-2023,Quantile mapping (weighted),0.969 (0.875–1.058)

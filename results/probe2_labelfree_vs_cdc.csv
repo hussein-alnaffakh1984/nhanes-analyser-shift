@@ -1,0 +1,7 @@
+analyte,median_new_raw,median_CDC_paired,median_labelfree_QM,corr_QM_vs_CDC,agreement_pct
+albumin_si,41.0,42.92,43.0,0.996,95.7
+alt_si,17.0,19.91,20.0,0.959,96.9
+ast_si,19.0,23.1,22.0,0.951,73.1
+uric_acid_si,315.24,307.74,321.19,0.998,-79.2
+cholesterol_si,4.68,4.84,4.81,0.998,81.7
+alp_si,74.0,67.32,63.0,0.971,35.3

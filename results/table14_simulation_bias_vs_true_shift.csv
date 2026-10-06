@@ -1,0 +1,13 @@
+scenario,method,AUC,O_E,O_E_sd,feature_error_pct
+Bias + case-mix shift,"Anchored QM (low-risk: age<40, no diabetes)",0.927,1.478,0.064,1.473
+Bias + case-mix shift,No correction,0.929,1.184,0.074,8.913
+Bias + case-mix shift,Oracle (true equations),0.929,1.41,0.082,0.0
+Bias + case-mix shift,Quantile mapping (all subjects),0.929,1.528,0.101,1.675
+Bias only,"Anchored QM (low-risk: age<40, no diabetes)",0.928,1.033,0.052,1.477
+Bias only,No correction,0.93,0.821,0.06,8.897
+Bias only,Oracle (true equations),0.93,0.996,0.066,0.0
+Bias only,Quantile mapping (all subjects),0.929,1.001,0.075,1.079
+True case-mix shift only,"Anchored QM (low-risk: age<40, no diabetes)",0.927,1.478,0.064,1.473
+True case-mix shift only,No correction,0.929,1.41,0.082,0.0
+True case-mix shift only,Oracle (true equations),0.929,1.41,0.082,0.0
+True case-mix shift only,Quantile mapping (all subjects),0.929,1.528,0.101,1.675
