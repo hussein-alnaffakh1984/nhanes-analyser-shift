@@ -1,0 +1,59 @@
+NHANES CKD development cohort - preparation report
+============================================================
+
+Participant flow:
+  all_examined_in_files: 57395
+  adults_18plus: 35815
+  with_serum_creatinine: 30081
+  excluded_pregnant: 283
+  excluded_dialysis_12m: 92
+  analytic_sample: 29706
+
+Analytic sample: 29,706
+
+Per cycle (unweighted):
+              n  ckd_kdigo_pct  egfr_lt60_pct  uacr_missing_pct
+cycle                                                          
+2011-2012  5090           17.1            7.6               1.1
+2013-2014  5546           16.7            7.4               1.3
+2015-2016  5309           16.5            6.9               1.4
+2017-2020  8150           18.5            7.8               1.6
+2021-2023  5611           17.3            8.3               1.8
+
+Primary outcome (ckd_kdigo) determinable: 29,386  | events: 5,094
+
+Missingness of candidate features (%):
+ldh_si                5.5
+potassium_si          0.3
+ast_si                0.2
+platelets_si          0.2
+mcv_si                0.2
+hemoglobin_si         0.2
+wbc_si                0.2
+rdw_si                0.2
+hematocrit_si         0.2
+triglycerides_si      0.1
+total_protein_si      0.1
+calcium_si            0.1
+alt_si                0.1
+phosphorus_si         0.1
+globulin_si           0.1
+total_bilirubin_si    0.1
+hba1c_si              0.1
+iron_si               0.1
+chloride_si           0.0
+glucose_si            0.0
+bun_si                0.0
+albumin_si            0.0
+uric_acid_si          0.0
+bicarbonate_si        0.0
+osmolality_si         0.0
+sodium_si             0.0
+ggt_si                0.0
+cholesterol_si        0.0
+alp_si                0.0
+age                   0.0
+sex_female            0.0
+
+REMINDER: 'creatinine_si' defines the outcome -> exclude from features.
+           'bun_si' -> evaluate models with and without it.
