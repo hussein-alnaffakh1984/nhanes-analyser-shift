@@ -1,0 +1,6 @@
+training,level,AUC,OE_mean,OE_sd
+Standard,-,0.916,0.759,0.0
+EFLM-APS augmentation,optimal,0.916,0.751,0.02
+EFLM-APS augmentation,desirable,0.916,0.74,0.034
+EFLM-APS augmentation,minimum,0.916,0.729,0.045
+EFLM-APS augmentation,2x minimum,0.914,0.712,0.075

@@ -1,0 +1,5 @@
+Set,ckd_egfr_lt60,age,egfr,hemoglobin_si,albumin_si,glucose_si,potassium_si,uric_acid_si,phosphorus_si,bicarbonate_si,n,female_%
+Development,0,45.0,100.7,140.0,43.0,5.16,3.9,309.3,1.19,25.0,14782,50.9
+Development,1,74.0,49.5,131.0,41.0,5.66,4.2,392.57,1.23,25.0,1163,52.0
+Temporal validation,0,50.0,98.1,141.0,41.0,5.16,4.1,303.35,1.13,25.0,12656,52.4
+Temporal validation,1,73.0,51.0,132.0,39.0,5.61,4.3,380.67,1.16,25.0,1105,52.6

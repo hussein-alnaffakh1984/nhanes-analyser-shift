@@ -1,0 +1,11 @@
+Model,Algorithm,Delta_AUC_vs_AgeSex,CI95
+T1 +CBC,LR,0.02,0.016 to 0.025
+T1 +CBC,GBM,0.017,0.012 to 0.023
+T2 +Glu/Na/K,LR,0.022,0.017 to 0.028
+T2 +Glu/Na/K,GBM,0.023,0.018 to 0.029
+T3 Extended (no Cr/BUN),LR,0.059,0.051 to 0.067
+T3 Extended (no Cr/BUN),GBM,0.055,0.047 to 0.063
+T3s Extended minus Phos/UA/HCO3,LR,0.031,0.026 to 0.037
+T3s Extended minus Phos/UA/HCO3,GBM,0.03,0.024 to 0.037
+T4 Extended + BUN,LR,0.077,0.070 to 0.085
+T4 Extended + BUN,GBM,0.074,0.066 to 0.082

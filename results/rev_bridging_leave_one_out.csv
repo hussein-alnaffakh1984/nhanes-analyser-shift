@@ -1,0 +1,15 @@
+variant,OE
+"Chained, all analytes",1.279
+Single step (Cobas 6000->DxC only),0.921
+"Chained, leave out albumin",1.154
+"Chained, leave out alp",1.249
+"Chained, leave out alt",1.245
+"Chained, leave out ast",1.276
+"Chained, leave out bicarbonate",1.035
+"Chained, leave out chloride",1.222
+"Chained, leave out cholesterol",1.267
+"Chained, leave out glucose",1.272
+"Chained, leave out potassium",1.202
+"Chained, leave out sodium",1.266
+"Chained, leave out triglycerides",1.272
+"Chained, leave out uric_acid",1.19

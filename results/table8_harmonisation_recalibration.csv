@@ -1,0 +1,13 @@
+Tier,Scenario,AUC,Brier,Calib_intercept,Calib_slope,O_E
+T3 Extended,A Raw (no harmonisation),0.916,0.0508,-0.478,0.961,0.759
+T3 Extended,B Features harmonised (CDC eq.),0.914,0.0495,0.099,0.949,1.061
+T3 Extended,C Outcome harmonised (creatinine eq.),0.917,0.0496,-0.559,0.961,0.724
+T3 Extended,D Features + outcome harmonised,0.914,0.0476,0.019,0.947,1.011
+T3 Extended,E0 Raw (same 80% eval set),0.917,0.0508,-0.484,0.963,0.757
+T3 Extended,E Logistic recalibration (20% update set),0.917,0.0488,-0.029,1.008,0.983
+T1 CBC,A Raw (no harmonisation),0.878,0.0588,-0.052,1.017,0.963
+T1 CBC,B Features harmonised (CDC eq.),0.878,0.0588,-0.052,1.017,0.963
+T1 CBC,C Outcome harmonised (creatinine eq.),0.878,0.0567,-0.117,1.016,0.918
+T1 CBC,D Features + outcome harmonised,0.878,0.0567,-0.117,1.016,0.918
+T1 CBC,E0 Raw (same 80% eval set),0.881,0.0587,-0.059,1.033,0.958
+T1 CBC,E Logistic recalibration (20% update set),0.881,0.0587,-0.036,1.077,0.974
