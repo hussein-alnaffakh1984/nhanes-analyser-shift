@@ -1,0 +1,4 @@
+cycle,n,events,prevalence,SE_lnOE,expected_95CI_width_OE_at_1,n_required_for_width_0_2
+2017-2020,8150,606,0.0744,0.0391,0.153,4787
+2021-2023,5611,447,0.0797,0.0454,0.178,4442
+development 2011-2016,15945,1163,0.0729,,,events per predictor parameter T3 = 48.5
