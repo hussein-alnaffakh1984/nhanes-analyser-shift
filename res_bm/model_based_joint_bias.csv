@@ -1,0 +1,6 @@
+scenario,expected_OE_relative_to_unbiased
+"11 analytes biased at the desirable limit, direction lowering O/E",0.857 (0.854–0.859)
+"11 analytes biased at the minimum limit, direction lowering O/E",0.794 (0.790–0.797)
+All 15 analytes at the 2017 bridging mean differences,0.840 (0.836–0.842)
+"Only the 8 analytes without a 2017 adjustment equation, at their 2017 mean differences",1.033 (1.032–1.034)
+All 15 analytes at the chained 2017 and 2021 bridging mean differences,0.634 (0.628–0.640)

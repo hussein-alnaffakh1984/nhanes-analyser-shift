@@ -31,12 +31,46 @@ for c, nm in NAME.items():
                      bridging_2021=a.L_mean_diff, OE_change_at_bridging_2021=round((oe_bias(c, a.L_mean_diff) - 1) * 100, 1)))
 r = pd.DataFrame(rows).sort_values("bias_for_5pct_OE"); r.to_csv(OUT + "model_based_allowable_bias.csv", index=False)
 pd.set_option("display.width", 250); print(r.to_string(index=False))
-# joint: all 11 analytes with APS biased at the desirable limit in the direction that lowers O/E, and all bridging 2017 differences together
-Z = X.copy(); Zm = X.copy(); Zj = X.copy()
+# joint effects (development data, model fixed), with design-based CI for the mean predicted risk
+rw = RaoWu(tr, SEED + 4000); mults = [rw.draw() for _ in range(R)]
+p_base = m3.predict_proba(X)[:, 1]
+def joint(D):
+    p = m3.predict_proba(D)[:, 1]; est = p_base.mean() / p.mean()
+    return fmt(est, [np.sum(w * p_base) / np.sum(w * p) for w in mults])
+Zd, Zm, Zj, Zc, Zn = X.copy(), X.copy(), X.copy(), X.copy(), X.copy()
 for c, nm in NAME.items():
     a = aps[aps.analyte == nm].iloc[0]
-    Zj[c] = Zj[c] * (1 + a.J_mean_diff / 100)
+    Zj[c] *= 1 + a.J_mean_diff / 100; Zc[c] *= (1 + a.J_mean_diff / 100) * (1 + a.L_mean_diff / 100)
+    if not a.J_adjustment_recommended: Zn[c] *= 1 + a.J_mean_diff / 100
     if a.APS_desirable == a.APS_desirable:
-        sgn = -np.sign(oe_bias(c, 1) - 1); Z[c] = Z[c] * (1 + sgn * a.APS_desirable / 100); Zm[c] = Zm[c] * (1 + sgn * a.APS_minimum / 100)
-for lab, D in [("11 analytes at desirable limit, worst direction", Z), ("11 analytes at minimum limit, worst direction", Zm), ("all 15 at 2017 bridging differences", Zj)]:
-    print(lab, round(y.mean() / m3.predict_proba(D)[:, 1].mean() / base_oe, 3))
+        sgn = -np.sign(oe_bias(c, 1) - 1); Zd[c] *= 1 + sgn * a.APS_desirable / 100; Zm[c] *= 1 + sgn * a.APS_minimum / 100
+jr = [("11 analytes biased at the desirable limit, direction lowering O/E", joint(Zd)),
+      ("11 analytes biased at the minimum limit, direction lowering O/E", joint(Zm)),
+      ("All 15 analytes at the 2017 bridging mean differences", joint(Zj)),
+      ("Only the 8 analytes without a 2017 adjustment equation, at their 2017 mean differences", joint(Zn)),
+      ("All 15 analytes at the chained 2017 and 2021 bridging mean differences", joint(Zc))]
+pd.DataFrame(jr, columns=["scenario", "expected_OE_relative_to_unbiased"]).to_csv(OUT + "model_based_joint_bias.csv", index=False)
+for a_, b_ in jr: print(a_, b_)
+print("n without J equation:", int((~aps.J_adjustment_recommended.astype(bool)).sum()))
+
+# ---- uncertainty and model dependence of the per-analyte sensitivity
+# (a) refit T3 in 200 bootstrap samples of PSUs within strata; (b) gradient boosting T3; (c) sodium and chloride biased together
+rng = np.random.default_rng(SEED + 4100)
+key = (tr.strata.astype(int).astype(str) + "_" + tr.psu.astype(int).astype(str)).values; st = tr.strata.astype(int).values
+idx_by = {k: np.where(key == k)[0] for k in np.unique(key)}; psu_by = {h: np.unique(key[st == h]) for h in np.unique(st)}
+def per1(model, D, yv, c):
+    Z = D.copy(); Z[c] = Z[c] * 1.01; return (model.predict_proba(D)[:, 1].mean() / model.predict_proba(Z)[:, 1].mean() - 1) * 100
+boot = {c: [] for c in NAME}
+for b in range(200):
+    ii = np.concatenate([idx_by[k] for h in psu_by for k in rng.choice(psu_by[h], len(psu_by[h]), replace=True)])
+    Db = tr.iloc[ii]; mb = LR().fit(Db[T3], Db.y)
+    for c in NAME: boot[c].append(per1(mb, Db[T3], Db.y.values, c))
+g3 = gbm["T3"]
+unc = pd.DataFrame([dict(analyte=NAME[c], per1_logistic=round(per1(m3, X, y, c), 2), boot_lo=round(np.percentile(boot[c], 2.5), 2),
+                         boot_hi=round(np.percentile(boot[c], 97.5), 2), per1_gradient_boosting=round(per1(g3, X, y, c), 2)) for c in NAME])
+unc.to_csv(OUT + "model_based_bias_uncertainty.csv", index=False); print(unc.to_string(index=False))
+Z = X.copy(); Z["sodium_si"] *= 1.008; Z["chloride_si"] *= 1.008
+common = p_base.mean() / m3.predict_proba(Z)[:, 1].mean()
+pd.DataFrame([dict(scenario="Sodium and chloride both biased by +0.8%", expected_OE_relative_to_unbiased=round(common, 3)),
+              dict(scenario="Sodium alone biased by +0.8%", expected_OE_relative_to_unbiased=round(oe_bias("sodium_si", 0.8), 3))]).to_csv(OUT + "model_based_common_mode.csv", index=False)
+print("common mode Na+Cl +0.8%:", round(common, 3), "Na alone:", round(oe_bias("sodium_si", 0.8), 3))

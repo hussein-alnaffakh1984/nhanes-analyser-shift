@@ -8,7 +8,7 @@ O = "figs_bm/"; os.makedirs(O, exist_ok=True); R = "res_bm/"
 def save(f, n):
     f.savefig(O + n + ".png", bbox_inches="tight"); f.savefig(O + n + ".pdf", bbox_inches="tight")
     f.savefig(O + n + ".tif", bbox_inches="tight", pil_kwargs={"compression": "tiff_lzw"}); plt.close(f)
-WHICH = os.environ.get("FIGS", "1234S")
+WHICH = os.environ.get("FIGS", "12345S")
 
 # ---------------------------------------------------------------- Figure 1: inter-platform bias vs EFLM APS
 if "1" in WHICH:
@@ -143,4 +143,29 @@ if "S" in WHICH:
     ax.axhline(1, color="black", lw=0.6, ls="--"); ax.set_xticks(range(len(sc))); ax.set_xticklabels([l for _, l in sc], fontsize=7.5)
     ax.set_ylabel("O/E ratio (mean ± SD, 200 repetitions)"); ax.legend(frameon=False, fontsize=7, ncol=4, loc="lower center", bbox_to_anchor=(0.5, 1.0))
     save(fig, "FigureS4_simulation")
+
+# ---------------------------------------------------------------- Figure 5: model-based allowable bias
+if "5" in WHICH:
+    d = pd.read_csv(R + "model_based_allowable_bias.csv")
+    d["a"] = d.OE_change_pct_per_1pct_bias.abs(); d = d.sort_values("a").reset_index(drop=True); yy = np.arange(len(d))
+    fig, (a1, a2) = plt.subplots(1, 2, figsize=(7.4, 4.0), sharey=True, gridspec_kw={"width_ratios": [1, 1.35], "wspace": 0.12})
+    a1.barh(yy, d.OE_change_pct_per_1pct_bias, color="#6a6a6a", edgecolor="black", lw=0.4, height=0.62)
+    a1.axvline(0, color="black", lw=0.6); a1.set_yticks(yy); a1.set_yticklabels([x.replace("CO2", "CO$_2$") for x in d.analyte]); a1.set_xticks([-6, -4, -2, 0, 2, 4])
+    a1.set_xlabel("Change in O/E ratio per +1% bias (%)"); a1.set_title("A", loc="left", fontsize=9, weight="bold")
+    XMAX = 60
+    for i, r in d.iterrows():
+        a2.plot([0.1, XMAX], [i, i], color="#e6e6e6", lw=0.5, zorder=0)
+        if r.EFLM_minimum == r.EFLM_minimum: a2.plot(r.EFLM_minimum, i, marker="s", mfc="white", mec="black", ms=5.5, ls="none", zorder=3)
+        if r.bias_for_5pct_OE == r.bias_for_5pct_OE: a2.plot(r.bias_for_5pct_OE, i, marker="D", color="black", ms=5.5, ls="none", zorder=4)
+        else: a2.annotate("", xy=(XMAX, i), xytext=(XMAX / 1.9, i), arrowprops=dict(arrowstyle="-|>", color="black", lw=0.9), zorder=4)
+        a2.plot(abs(r.bridging_2017), i, marker="o", color="#8a8a8a", mec="black", mew=0.4, ms=5, ls="none", zorder=2)
+    a2.set_xscale("log"); a2.set_xlim(0.1, XMAX * 1.15); a2.set_xticks([0.1, 0.3, 1, 3, 10, 30]); a2.set_xticklabels(["0.1", "0.3", "1", "3", "10", "30"])
+    a2.set_xlabel("Relative bias (%, logarithmic scale)"); a2.set_title("B", loc="left", fontsize=9, weight="bold")
+    from matplotlib.lines import Line2D
+    a2.legend(handles=[Line2D([], [], marker="D", color="black", ls="none", ms=5.5, label="Bias changing the O/E ratio by 5%"),
+                       Line2D([], [], marker="s", mfc="white", mec="black", ls="none", ms=5.5, label="Minimum specification (biological variation)"),
+                       Line2D([], [], marker="o", color="#8a8a8a", mec="black", mew=0.4, ls="none", ms=5, label="Observed difference, 2017 bridging study")],
+              frameon=False, fontsize=7, loc="upper center", bbox_to_anchor=(0.5, 1.2), ncol=1)
+    a2.tick_params(axis="y", length=0)
+    save(fig, "Figure5")
 print("figures done:", WHICH)
