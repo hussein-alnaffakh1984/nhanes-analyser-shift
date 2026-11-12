@@ -1,0 +1,15 @@
+cycle,group,shapley_ln_ratio,share_of_total_pct,one_at_a_time_ln_ratio
+2017-2020,"Electrolytes (Na, K, Cl, total CO2)",0.2009,68.9,0.1977
+2017-2020,"Albumin, total protein, calcium",0.0728,24.9,0.0703
+2017-2020,"Urate, phosphate",-0.0299,-10.3,-0.0298
+2017-2020,Glucose,-0.0048,-1.7,-0.0044
+2017-2020,Lipids,0.003,1.0,0.0028
+2017-2020,"Liver enzymes (ALT, AST, ALP)",0.0499,17.1,0.048
+2017-2020,TOTAL (all groups aligned),0.2918,100.0,
+2021-2023,"Electrolytes (Na, K, Cl, total CO2)",0.2548,126.9,0.2579
+2021-2023,"Albumin, total protein, calcium",0.0953,47.4,0.0949
+2021-2023,"Urate, phosphate",-0.1944,-96.8,-0.1835
+2021-2023,Glucose,-0.0057,-2.9,-0.0054
+2021-2023,Lipids,-0.0027,-1.4,-0.0027
+2021-2023,"Liver enzymes (ALT, AST, ALP)",0.0536,26.7,0.053
+2021-2023,TOTAL (all groups aligned),0.2008,100.0,

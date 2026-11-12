@@ -1,0 +1,5 @@
+analysis,cycle,prevalence_dev,prevalence_val,OE_T0,OE_T3,ratio
+"Outcome from unconverted creatinine (validation on Roche scale, development on Beckman scale)",2017-2020,7.29,7.83,0.961 (0.885–1.034),0.749 (0.695–0.805),0.780 (0.748–0.813)
+"Outcome from unconverted creatinine (validation on Roche scale, development on Beckman scale)",2021-2023,7.29,8.32,0.872 (0.779–0.981),0.774 (0.705–0.846),0.888 (0.842–0.931)
+Development creatinine converted to the Roche scale; validation unconverted,2017-2020,7.65,7.83,0.917 (0.846–0.987),0.736 (0.683–0.789),0.802 (0.769–0.835)
+Development creatinine converted to the Roche scale; validation unconverted,2021-2023,7.65,8.32,0.829 (0.741–0.933),0.753 (0.686–0.823),0.908 (0.863–0.952)
