@@ -179,6 +179,27 @@ PS = {"T0s": mods["T0s"].predict_proba(base[T0])[:, 1], "T3s": mods["T3s"].predi
 P14 = {t: mod14[t].predict_proba(base[TIERS[t]])[:, 1] for t in mod14}
 CDCD = cdc(base)
 P_cdc = {t: models[t].predict_proba(CDCD[TIERS[t]])[:, 1] for t in ["TR", "T3"]}
+# paired-sample mean % differences (new minus old), CDC bridging tables BIOPRO_J (Cobas 6000 vs DxC 660i, n=248)
+# and BIOPRO_L (Cobas 8000 vs Cobas 6000, n=152), applied to all 15 analytes regardless of the adjustment recommendation
+D_J = {"albumin_si": -4.42, "alp_si": 9.74, "ast_si": -18.03, "alt_si": -15.46, "bicarbonate_si": 1.74, "calcium_si": -2.12,
+       "cholesterol_si": -3.21, "chloride_si": -1.44, "glucose_si": 2.41, "potassium_si": -1.398, "sodium_si": 0.80,
+       "phosphorus_si": -1.80, "total_protein_si": 0.36, "triglycerides_si": 13.44, "uric_acid_si": 2.37}
+D_L = {"albumin_si": 1.48, "alp_si": 9.68, "ast_si": 0.59, "alt_si": 6.96, "bicarbonate_si": -7.65, "calcium_si": 0.84,
+       "cholesterol_si": 0.61, "chloride_si": -0.80, "glucose_si": 4.31, "potassium_si": 2.69, "sodium_si": 0.60,
+       "phosphorus_si": -2.23, "total_protein_si": 3.13, "triglycerides_si": 2.22, "uric_acid_si": -0.04}
+def paired_diff(d, skip_L=()):
+    d = d.copy(); m17 = d.cycle.isin(NEW); m21 = d.cycle == "2021-2023"
+    for c, v in D_J.items(): d.loc[m17, c] = d.loc[m17, c] / (1 + v / 100)
+    for c, v in D_L.items():
+        if c not in skip_L: d.loc[m21, c] = d.loc[m21, c] / (1 + v / 100)
+    return d
+PDD = paired_diff(base); PDX = paired_diff(base, skip_L=("bicarbonate_si",))
+P_pd = {t: models[t].predict_proba(PDD[TIERS[t]])[:, 1] for t in ["TR", "T3"]}
+P_pdx = {t: models[t].predict_proba(PDX[TIERS[t]])[:, 1] for t in ["TR", "T3"]}
+# single-step CDC (Cobas 6000 -> DxC only) and chained CDC without the Cobas 8000 total CO2 equation
+CDC1 = cdc(base, chain=False); P_cdc1 = {t: models[t].predict_proba(CDC1[TIERS[t]])[:, 1] for t in ["TR", "T3"]}
+CDCX = cdc(base, skip=("bicarbonate_si",))   # total CO2 has a CDC equation only for Cobas 8000 -> Cobas 6000
+P_cdcx = {t: models[t].predict_proba(CDCX[TIERS[t]])[:, 1] for t in ["TR", "T3"]}
 FOLDS_SEED = np.random.default_rng(SEED + 7)
 
 def pred_aligned(method, rows, fit_w, ref, cols=ALIGN_COLS, folds=None, apply_rows=None, tiers=("TR", "T3")):
@@ -199,6 +220,8 @@ def cycle_analysis(cyc, weighted, seed):
     pt = {}
     for t in TIERS: pt[("none", t)] = P[t][m]
     for t in ["TR", "T3"]: pt[("cdc", t)] = P_cdc[t][m]
+    for t in ["TR", "T3"]:
+        pt[("pd", t)] = P_pd[t][m]; pt[("pdx", t)] = P_pdx[t][m]; pt[("cdc1", t)] = P_cdc1[t][m]; pt[("cdcx", t)] = P_cdcx[t][m]
     full_w = sw.copy()
     for meth in ["qm", "ls"]:
         insample = pred_aligned(meth, m, full_w, ref)                       # fitted and applied to the same rows
@@ -245,13 +268,15 @@ for weighted in [False, True]:
         results[(cyc, weighted)] = cycle_analysis(cyc, weighted, SEED + 10 * i + (5 if weighted else 0))
         print(f"cycle {cyc} weighted={weighted} done {time.time()-t_start:.0f}s", flush=True)
 
-LAB = {"none": "No adjustment", "cdc": "CDC bridging (chained in 2021–2023)", "qm_cf": "Quantile mapping, cross-fitted",
+LAB = {"none": "No adjustment", "cdc": "CDC bridging (chained in 2021–2023)", "cdc1": "CDC bridging, single step (Cobas 6000 equations only)",
+       "cdcx": "CDC bridging, chained, without the total CO2 equation", "pd": "Paired mean-difference correction (all 15 analytes)",
+       "pdx": "Paired mean-difference correction, without Cobas 8000 total CO2", "qm_cf": "Quantile mapping, cross-fitted",
        "ls_cf": "Location–scale, cross-fitted", "qm_in": "Quantile mapping, in-sample", "ls_in": "Location–scale, in-sample"}
 rows = []
 for (cyc, weighted), r in results.items():
     y, w = r["y"], r["w"]
     r0 = r["bs"][("none", "T0")]
-    for meth in ["none", "cdc", "qm_cf", "ls_cf", "qm_in", "ls_in"]:
+    for meth in ["none", "cdc", "cdc1", "cdcx", "pd", "pdx", "qm_cf", "ls_cf", "qm_in", "ls_in"]:
         k3 = (meth, "T3"); kR = (meth, "TR")
         ratio_est = r["est"][k3] / r["est"][("none", "T0")]; ratio_bs = r["bs"][k3] / r0
         ratioR_est = r["est"][kR] / r["est"][("none", "T0")]; ratioR_bs = r["bs"][kR] / r0
@@ -273,9 +298,9 @@ for (cyc, weighted), r in results.items():
         a = roc_auc_score(y, r["pt"][k], sample_weight=w)
         KEY[f"{cyc}|{'w' if weighted else 'u'}|AUC_{k[1]}"] = [round(a, 3)] + list(np.round(np.percentile(r["bs_auc"][k], [2.5, 97.5]), 3))
     # paired differences between methods (|ln ratio|)
-    lr_ = {meth: np.abs(np.log(r["bs"][(meth, "T3")] / r0)) for meth in ["cdc", "qm_cf", "ls_cf", "qm_in", "ls_in"]}
+    lr_ = {meth: np.abs(np.log(r["bs"][(meth, "T3")] / r0)) for meth in ["cdc", "pd", "qm_cf", "ls_cf", "qm_in", "ls_in"]}
     lr_e = {meth: abs(np.log(r["est"][(meth, "T3")] / r["est"][("none", "T0")])) for meth in lr_}
-    for a_, b_ in [("ls_cf", "qm_cf"), ("ls_cf", "cdc"), ("qm_cf", "cdc"), ("qm_cf", "qm_in"), ("ls_cf", "ls_in")]:
+    for a_, b_ in [("ls_cf", "qm_cf"), ("ls_cf", "cdc"), ("qm_cf", "cdc"), ("qm_cf", "qm_in"), ("ls_cf", "ls_in"), ("pd", "cdc"), ("ls_cf", "pd")]:
         d = lr_[a_] - lr_[b_]; p2 = 2 * min((d > 0).mean(), (d < 0).mean())
         rows.append(dict(cycle=cyc, weighted=weighted, method=f"DIFF |ln ratio|: {LAB[a_]} minus {LAB[b_]}",
                          ratio_T3_T0=fmt(lr_e[a_] - lr_e[b_], d), OE_T3=f"bootstrap P={max(p2, 1/R):.3f}"))
