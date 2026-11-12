@@ -72,7 +72,7 @@ if "2" in WHICH:
 # ---------------------------------------------------------------- Figure 3: calibration curves (needs model predictions)
 if "3" in WHICH:
     src = open("bm_analysis.py").read().split("# ------------------------------------------------------------------ 1. main analysis")[0]
-    exec(src)
+    exec(src); R = "res_bm/"
     fig, axes = plt.subplots(1, 2, figsize=(7.2, 3.7), sharey=True)
     styles = [("No adjustment", "-", "black"), ("CDC bridging", "--", "black"), ("Location–scale (cross-fitted)", ":", "#555555")]
     for ax, cyc, n_lab in [(axes[0], "2017-2020", "A  2017–2020, Roche Cobas 6000"), (axes[1], "2021-2023", "B  2021–2023, Roche Cobas 8000")]:
