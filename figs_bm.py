@@ -112,9 +112,11 @@ if "4" in WHICH:
 
 # ---------------------------------------------------------------- Supplementary figures
 if "S" in WHICH:
-    d = pd.read_csv(R + "domain_classifier.csv")
+    d = pd.read_csv(R + "domain_classifier.csv"); d15 = pd.read_csv(R + "domain_classifier_15.csv")
+    d["chemistry"] = d15.chemistry15.values; d["chemistry_K_rounded"] = d15.chemistry15_K_rounded.values
+    d["perm_null_chem_max"] = np.maximum(d.perm_null_chem_max.values, d15.perm_null_max.values)
     fig, ax = plt.subplots(figsize=(7.0, 3.4)); x = np.arange(len(d)); w = 0.2
-    cols = [("chemistry", "Chemistry (as released)", "#303030"), ("chemistry_K_rounded", "Chemistry, potassium rounded to 0.1", "#7a7a7a"),
+    cols = [("chemistry", "15 chemistry analytes (as released)", "#303030"), ("chemistry_K_rounded", "Chemistry, potassium rounded to 0.1", "#7a7a7a"),
             ("CBC", "Complete blood count", "#b0b0b0"), ("age_sex", "Age and sex", "#e0e0e0")]
     for i, (c, l, col) in enumerate(cols):
         ax.bar(x + (i - 1.5) * w, d[c] - 0.45, w, bottom=0.45, color=col, edgecolor="black", lw=0.4, label=l)
