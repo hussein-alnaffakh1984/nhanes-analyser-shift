@@ -1,6 +1,22 @@
-# Laboratory analyser changes and loss of calibration in creatinine-free machine learning models (NHANES)
+# Analyser changes and the calibration of a routine-chemistry prediction model (NHANES)
 
-Code and derived data for the manuscript *"Laboratory analyser changes and loss of calibration in creatinine-free machine learning models for reduced kidney function in NHANES"* (Al-Naffakh HAH, Jubran AS; Al-Kafeel University, Najaf, Iraq).
+Code and derived data for the manuscript *"Calibration of a routine-chemistry prediction model after laboratory analyser changes: paired-sample bridging equations versus statistical alignment"* (Al-Naffakh HAH, Reishaan MA, Radhi AD, Khattak UF; Al-Kafeel University, Najaf, Iraq). The work is dedicated to the memory of the late Dr. Abdulsahib Saad Jubran.
+
+## Submitted version (Biochemia Medica)
+The analyses reported in the submitted manuscript are produced by the scripts below; outputs are in `res_bm/` (tables, CSV/JSON) and `figs_bm/` (figures, 600 dpi).
+
+| Script | Content |
+| --- | --- |
+| `bm_analysis.py` | Main analysis: model tiers, T3/T0 ratio, CDC bridging equations, paired mean-difference correction, cross-fitted statistical alignment, prospective transfer, negative controls, Shapley attribution, sensitivity analyses, pooled validation, race/ethnicity, decision curves, domain classifier; design-based (Rao–Wu) bootstrap with 1000 replicates |
+| `aps_bm.py` | Inter-platform bias of the CDC bridging studies vs EFLM biological-variation specifications |
+| `aps_model_bm.py` | Model-based allowable bias per analyte, joint and common-mode bias, bootstrap refitting and gradient boosting |
+| `recal_bm.py` | Recalibration on 2017–2020 evaluated on 2021–2023 |
+| `pop_vs_paired.py` | Population changes vs paired-sample differences |
+| `extra_bm.py` | Fasting sensitivity analysis and 15-analyte domain classifier |
+| `sim_bm.py` | Simulation of analyser bias and case-mix change (200 repetitions) |
+| `figs_bm.py` | Figures and supplementary figures |
+
+Run order: `python bm_analysis.py`, then `aps_bm.py`, `aps_model_bm.py`, `recal_bm.py`, `pop_vs_paired.py`, `extra_bm.py`, `sim_bm.py`, `figs_bm.py` (`BM_R` sets the number of bootstrap replicates). The full main analysis takes about 45 minutes. The scripts described in the sections below belong to earlier versions of the analysis and are kept for transparency.
 
 ## What the code does
 - Builds an adult analytic sample (n = 29,706) from five NHANES cycles (2011–2023), excluding pregnancy and dialysis.
@@ -35,7 +51,7 @@ Pre-computed outputs are included in `results/` and `figures/`.
 | `figures.py`, `figures_rev.py`, `fig4.py` | Figures 1–6 and S1 |
 
 ## Software
-Python 3.12; package versions in `requirements.txt`.
+Python 3.13 (submitted version; earlier versions 3.12); package versions in `requirements.txt`.
 
 ## Licence
 MIT (code). NHANES data are in the public domain.
