@@ -1,8 +1,8 @@
 # Analyser changes and the calibration of a routine-chemistry prediction model (NHANES)
 
-Code and derived data for the manuscript *"Calibration of a routine-chemistry prediction model after laboratory analyser changes: paired-sample bridging equations versus statistical alignment"* (Al-Naffakh HAH, Reishaan MA, Radhi AD, Khattak UF; Al-Kafeel University, Najaf, Iraq). The work is dedicated to the memory of the late Dr. Abdulsahib Saad Jubran.
+Code and derived data for the manuscript *"Analytical bias and the calibration of a routine-chemistry prediction model after laboratory analyser changes"* (Al-Naffakh HAH, Reishaan MA, Radhi AD, Khattak UF; Al-Kafeel University, Najaf, Iraq). The work is dedicated to the memory of the late Dr. Abdulsahib Saad Jubran.
 
-## Submitted version (Biochemia Medica)
+## Submitted version
 The analyses reported in the submitted manuscript are produced by the scripts below; outputs are in `res_bm/` (tables, CSV/JSON) and `figs_bm/` (figures, 600 dpi).
 
 | Script | Content |
